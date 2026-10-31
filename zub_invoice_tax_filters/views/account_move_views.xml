@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cada filtro va entre separadores: al activar varios se combinan con Y. -->
+    <record id="view_account_invoice_filter_zub_tax" model="ir.ui.view">
+        <field name="name">account.invoice.select.zub.tax.filters</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='due_date']" position="after">
+                <separator/>
+                <filter name="zub_any_iva16" string="Al menos una línea con IVA 16%" domain="[('zub_any_iva16', '=', True)]"/>
+                <separator/>
+                <filter name="zub_any_iva0" string="Al menos una línea con IVA 0%" domain="[('zub_any_iva0', '=', True)]"/>
+                <separator/>
+                <filter name="zub_any_iva_exento" string="Al menos una línea con IVA Exento" domain="[('zub_any_iva_exento', '=', True)]"/>
+                <separator/>
+                <filter name="zub_any_ieps8" string="Al menos una línea con IEPS 8%" domain="[('zub_any_ieps8', '=', True)]"/>
+                <separator/>
+                <filter name="zub_all_iva16" string="Todas las líneas con IVA 16%" domain="[('zub_all_iva16', '=', True)]"/>
+                <separator/>
+                <filter name="zub_all_iva0" string="Todas las líneas con IVA 0%" domain="[('zub_all_iva0', '=', True)]"/>
+                <separator/>
+                <filter name="zub_all_iva_exento" string="Todas las líneas con IVA Exento" domain="[('zub_all_iva_exento', '=', True)]"/>
+                <separator/>
+                <filter name="zub_all_ieps8" string="Todas las líneas con IEPS 8%" domain="[('zub_all_ieps8', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

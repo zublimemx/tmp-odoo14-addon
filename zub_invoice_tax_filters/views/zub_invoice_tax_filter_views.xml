@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="zub_invoice_tax_filter_view_tree" model="ir.ui.view">
+        <field name="name">zub.invoice.tax.filter.tree</field>
+        <field name="model">zub.invoice.tax.filter</field>
+        <field name="arch" type="xml">
+            <tree string="Filtros de impuestos" editable="bottom">
+                <field name="filter_type"/>
+                <field name="tax_id" options="{'no_create': True}"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="zub_invoice_tax_filter_action" model="ir.actions.act_window">
+        <field name="name">Filtros de impuestos</field>
+        <field name="res_model">zub.invoice.tax.filter</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Configura el impuesto de cada filtro</p>
+            <p>Elige el impuesto que usa cada filtro de la lista de facturas.</p>
+        </field>
+    </record>
+
+    <menuitem id="zub_invoice_tax_filter_menu"
+              name="Filtros de impuestos"
+              parent="account.account_account_menu"
+              action="zub_invoice_tax_filter_action"
+              groups="account.group_account_manager"
+              sequence="3"/>
+</odoo>
