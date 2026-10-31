@@ -15,6 +15,7 @@
         "views/zub_invoice_tax_filter_views.xml",
         "views/account_move_views.xml",
     ],
+    "uninstall_hook": "uninstall_hook",
     "installable": True,
     "application": False,
 }

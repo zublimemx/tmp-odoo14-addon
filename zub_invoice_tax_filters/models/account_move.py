@@ -11,27 +11,35 @@ class AccountMove(models.Model):
     # Campos no almacenados: solo sirven para los filtros de la vista de
     # búsqueda; no crean columnas ni modifican datos de las facturas.
     zub_any_iva16 = fields.Boolean(
+        string="Al menos una línea con IVA 16%",
         compute="_compute_zub_tax_filters", search="_search_zub_any_iva16"
     )
     zub_any_iva0 = fields.Boolean(
+        string="Al menos una línea con IVA 0%",
         compute="_compute_zub_tax_filters", search="_search_zub_any_iva0"
     )
     zub_any_iva_exento = fields.Boolean(
+        string="Al menos una línea con IVA Exento",
         compute="_compute_zub_tax_filters", search="_search_zub_any_iva_exento"
     )
     zub_any_ieps8 = fields.Boolean(
+        string="Al menos una línea con IEPS 8%",
         compute="_compute_zub_tax_filters", search="_search_zub_any_ieps8"
     )
     zub_all_iva16 = fields.Boolean(
+        string="Todas las líneas con IVA 16%",
         compute="_compute_zub_tax_filters", search="_search_zub_all_iva16"
     )
     zub_all_iva0 = fields.Boolean(
+        string="Todas las líneas con IVA 0%",
         compute="_compute_zub_tax_filters", search="_search_zub_all_iva0"
     )
     zub_all_iva_exento = fields.Boolean(
+        string="Todas las líneas con IVA Exento",
         compute="_compute_zub_tax_filters", search="_search_zub_all_iva_exento"
     )
     zub_all_ieps8 = fields.Boolean(
+        string="Todas las líneas con IEPS 8%",
         compute="_compute_zub_tax_filters", search="_search_zub_all_ieps8"
     )
 
@@ -69,7 +77,7 @@ class AccountMove(models.Model):
             label = dict(FILTER_TYPES)[filter_type]
             raise UserError(
                 "El filtro «%s» no tiene un impuesto configurado. Configúralo en "
-                "Contabilidad › Configuración › Filtros de impuestos." % label
+                "Contabilidad › Configuración › Contabilidad › Filtros de impuestos." % label
             )
         lines = self.env["account.move.line"]
         product_lines = [

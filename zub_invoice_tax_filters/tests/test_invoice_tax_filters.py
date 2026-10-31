@@ -5,6 +5,7 @@ from odoo.tests import tagged
 from odoo.tools import mute_logger
 
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.zub_invoice_tax_filters.hooks import uninstall_hook
 
 TAX_KEYS = ("iva16", "iva0", "iva_exento", "ieps8")
 FILTERS = tuple("%s_%s" % (mode, key) for mode in ("any", "all") for key in TAX_KEYS)
@@ -44,7 +45,12 @@ def expected_match(filter_name, line_tax_sets):
 class TestInvoiceTaxFilters(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls, chart_template_ref="l10n_mx.mx_coa"):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+        try:
+            super().setUpClass(chart_template_ref=chart_template_ref)
+        except ValueError:
+            # Sin la localización mexicana instalada no hay plan contable de México.
+            cls.tearDownClass()
+            cls.skipTest(cls, "Requiere la localización mexicana (l10n_mx).")
         company = cls.company_data["company"]
 
         def mx_tax(name):
@@ -210,3 +216,28 @@ class TestInvoiceTaxFilters(AccountTestInvoicingCommon):
         self.assertEqual(filter_2.company_id, company_2)
         expected = self._expected(self.invoices, self.invoice_lines, ["any_iva16"])
         self.assertEqual(self._search(self.invoices, ["any_iva16"]), expected)
+
+    def test_deleting_configured_tax_removes_only_its_configuration(self):
+        unused_tax = self.sale_taxes["iva16"].copy({"name": "IVA 16% SIN USO"})
+        filter_rec = self.env["zub.invoice.tax.filter"].search([("filter_type", "=", "any_iva16")])
+        filter_rec.tax_id = unused_tax
+        unused_tax.unlink()
+        self.assertFalse(filter_rec.exists())
+        self.assertEqual(self.env["zub.invoice.tax.filter"].search_count([]), len(FILTERS) - 1)
+
+    def test_uninstall_hook_archives_favorites_using_the_filters(self):
+        Favorite = self.env["ir.filters"]
+        action = self.env.ref("account.action_move_out_invoice_type")
+        ours = Favorite.create({
+            "name": "Con IVA 16%", "model_id": "account.move", "user_id": self.env.uid,
+            "action_id": action.id, "is_default": True,
+            "domain": "[('zub_any_iva16', '=', True)]",
+        })
+        other = Favorite.create({
+            "name": "Borradores", "model_id": "account.move", "user_id": False,
+            "action_id": action.id, "domain": "[('state', '=', 'draft')]",
+        })
+        uninstall_hook(self.env.cr, self.env.registry)
+        self.assertFalse(ours.active)
+        self.assertFalse(ours.is_default)
+        self.assertTrue(other.active)
