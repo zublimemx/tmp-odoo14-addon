@@ -1,6 +1,8 @@
 {
     "name": "Filtros de impuestos en facturas",
     "summary": "Filtros por impuesto en la lista de facturas, configurables.",
+    "description": "Agrega 8 filtros por impuesto (al menos una / todas las líneas con "
+    "IVA 16%, IVA 0%, IVA Exento e IEPS 8%) a la lista de facturas. Ver README.md.",
     "version": "14.0.1.0.0",
     "category": "Accounting/Accounting",
     "author": "Zublime",
